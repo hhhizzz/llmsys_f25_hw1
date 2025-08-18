@@ -132,9 +132,36 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
     # BEGIN ASSIGN1_1
-    # TODO
+    accumulate_derivative = {variable.unique_id: deriv}
+    topo_order = topological_sort(variable)
+    print("--- Starting Backpropagation ---")
 
-    raise NotImplementedError("Task Autodiff Not Implemented Yet")
+    for var in topo_order:
+        # Add this print at the start of the loop
+        print(f"Processing Var ID: {var.unique_id}")
+
+        current_grad = accumulate_derivative[var.unique_id]
+
+        if var.is_leaf():
+            # Add this print for leaves
+            print(f"  - It's a LEAF. Accumulating gradient: {current_grad}")
+            var.accumulate_derivative(current_grad)
+        else:
+            # Add this print for non-leaves
+            print(f"  - It's a NODE. My gradient is: {current_grad}")
+
+            parent_grads = var.chain_rule(current_grad)
+
+            # Add this to see what chain_rule returns
+            print(f"  - chain_rule returned gradients for parents.")
+
+            for parent, parent_d in parent_grads:
+                print(f"    - {parent.unique_id}, gradient: {parent_d}")
+                if parent.unique_id not in accumulate_derivative:
+                    accumulate_derivative[parent.unique_id] = parent_d
+                else:
+                    accumulate_derivative[parent.unique_id] += parent_d
+
     # END ASSIGN1_1
 
 
