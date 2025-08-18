@@ -101,9 +101,22 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
         Non-constant Variables in topological order starting from the right.
     """
     # BEGIN ASSIGN1_1
-    # TODO
-    
-    raise NotImplementedError("Task Autodiff Not Implemented Yet")
+    visited = set()
+    result = []
+
+    def build_top(var: Variable):
+        if var.unique_id in visited:
+            return
+        visited.add(var.unique_id)
+        if var.is_constant():
+            return
+        for parent in var.parents:
+            build_top(parent)
+        result.insert(0, var)
+
+    build_top(variable)
+    return result
+
     # END ASSIGN1_1
 
 
@@ -120,7 +133,7 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     """
     # BEGIN ASSIGN1_1
     # TODO
-   
+
     raise NotImplementedError("Task Autodiff Not Implemented Yet")
     # END ASSIGN1_1
 
